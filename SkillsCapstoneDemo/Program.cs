@@ -163,12 +163,45 @@ namespace ConsoleApp1
 
         }
         //Question 1.4 Create and read file into instructor list
+
         public static List<Instructor> readInstructorFile(string fpath)
         {
             Console.WriteLine("---- Q1.4 Read file into instructor list");
-             
-             
-             
+            int entriesFound = 0;
+            Instructor temp;
+            List<Instructor> tmpList = new List<Instructor>();
+
+
+            using (var textReader = new System.IO.StreamReader(fpath))
+            { //using System.IO
+                char _Delimiter = ','; // .csv comma separate values
+                string line = textReader.ReadLine();
+                int skipCount = 0;
+                while (line != null && skipCount < 1)
+                { // skip file header
+                    line = textReader.ReadLine();
+                    skipCount++;
+                }
+                while (line != null)
+                {
+                    string[] columns = line.Split(_Delimiter);
+                    entriesFound++;
+                    line = textReader.ReadLine();
+                    for (int i = 0; i < columns.Length; i++)
+                    {
+                        if (columns[i].Contains(" "))
+                        {
+                            columns[i].Replace(" ", " ");
+                        }
+                    }
+
+                    temp = new Instructor(columns[0], columns[1], columns[2]);
+                    tmpList.Add(temp);
+                }
+            }
+
+
+
             return tmpList;
         }
         public static dynamic qNamesEmails(List<Instructor> instructorsList, Course[] coursesList, int level)
@@ -275,6 +308,43 @@ namespace ConsoleApp1
     }
     public class Instructor // Question 1.4
     {
-         
+        public string InstructorName, OfficeNumber, EmailAddress;
+
+        public Instructor(string InstructorName, string OfficeNumber, string EmailAddress)
+        {
+            this.InstructorName = InstructorName;
+            this.OfficeNumber = OfficeNumber;
+            this.EmailAddress = EmailAddress;
+        }
+
+        public string getInstructorName()
+        {
+            return InstructorName;
+        }
+
+        public string getOfficeNumber()
+        {
+            return OfficeNumber;
+        }
+
+        public string getEmailAddress()
+        {
+            return EmailAddress;
+        }
+
+        public void setInstructorName(string InstructorName)
+        {
+            this.InstructorName = InstructorName;
+        }
+
+        public void setOfficeNumber(string OfficeNumber)
+        {
+            this.OfficeNumber = OfficeNumber;
+        }
+
+        public void setEmailAddress(string EmailAddress)
+        {
+            this.EmailAddress = EmailAddress;
+        }
     }
 }
