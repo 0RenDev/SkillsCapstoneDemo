@@ -123,16 +123,44 @@ namespace ConsoleApp1
         public static dynamic qCourses(Course[] coursesList, String subject, int level)
         {
             Console.WriteLine("---- Q1.3a Query course by subject, level");
+            IEnumerable<Course> results =
+                from c in coursesList
+                where Int32.Parse(c.Code) >= level && c.Subject == subject
+                orderby c.Instructor ascending
+                select c;
+
 
             return results;
         }
+
         public static dynamic qGroups(Course[] coursesList)
         {
             Console.WriteLine("---- Q1.3b Course by subject, code in groups");
-             
-             
-             
+
+            List<Course> temp = new List<Course>();
+
+            for (int i = 0; i < coursesList.Length; i++)
+            {
+                temp.Add(coursesList[i]);
+            }
+
+            var groups =
+                from c in coursesList
+                group c by c.Subject into g
+                select new
+                {
+                    Subject = g.Key,
+                    Groups = from c in g
+                             group c by c.Code into codeC
+                             select new
+                             {
+                                 Code = codeC.Key,
+                                 Courses = codeC.ToList<Course>()
+                             }
+                };
+
             return groups;
+
         }
         //Question 1.4 Create and read file into instructor list
         public static List<Instructor> readInstructorFile(string fpath)
