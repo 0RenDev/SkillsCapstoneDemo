@@ -204,12 +204,20 @@ namespace ConsoleApp1
 
             return tmpList;
         }
+        //1.5 Implementation
         public static dynamic qNamesEmails(List<Instructor> instructorsList, Course[] coursesList, int level)
         {
             Console.WriteLine("---- Q1.5 Find instructor’s email address for each course");
-             
-             
-             
+            var query =
+                from i in instructorsList
+                join c in coursesList on i.InstructorName equals c.Instructor
+                orderby c.Code ascending
+                select new
+                {
+                    Course = c.Subject + c.Code,
+                    InstructorEmail = i.EmailAddress
+                };
+
             return query;
         }
         public static dynamic qTitleInstructorInXml(Course[] coursesList)
