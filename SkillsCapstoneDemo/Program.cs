@@ -73,14 +73,52 @@ namespace ConsoleApp1
                 Console.WriteLine(courseElement);
             }
         }
-        // Question 1.2 Read course file into course list
+        // Question 1.2 Read course file into course list/
+
+
         public static Course[] readCourseFile(string fpath)
         {
-            Console.WriteLine("---- Q1.2 Read file into course list");
-             
- 
- 
-            return tmpList.ToArray<Course>();
+            int entriesFound = 0;
+            Course temp;
+            List<Course> dyList = new List<Course>();
+
+
+            using (var textReader = new System.IO.StreamReader(fpath))
+            { //using System.IO
+                char _Delimiter = ','; // .csv comma separate values
+                string line = textReader.ReadLine();
+                int skipCount = 0;
+                string[] subjCodeArr;
+                while (line != null && skipCount < 1)
+                { // skip file header
+                    line = textReader.ReadLine();
+                    skipCount++;
+                }
+                while (line != null)
+                {
+                    string[] columns = line.Split(_Delimiter);
+                    entriesFound++;
+                    line = textReader.ReadLine();
+
+
+
+                    for (int i = 0; i < columns.Length; i++)
+                    {
+                        if (columns[i].Contains(" "))
+                        {
+                            columns[i].Replace(" ", " ");
+                        }
+                    }
+
+                    subjCodeArr = columns[0].Split(' ');
+
+                    temp = new Course(subjCodeArr[0].Trim(), subjCodeArr[1].Trim(), columns[1].Trim(), columns[7].Trim(), columns[3].Trim(), columns[2].Trim());
+                    dyList.Add(temp);
+                }
+            }
+
+            Course[] list = dyList.ToArray();
+            return list;
         }
         public static dynamic qCourses(Course[] coursesList, String subject, int level)
         {
@@ -141,7 +179,71 @@ namespace ConsoleApp1
     }
     public class Course // Question 1.2
     {
-         
+        public string Subject, Code, Title, Location, Instructor, CourseID;
+
+
+
+
+        public Course(string Subject, string Code, string Title, string Location, string Instructor, string CourseID)
+        {
+            this.Subject = Subject;
+            this.Code = Code;
+            this.Title = Title;
+            this.Location = Location;
+            this.Instructor = Instructor;
+            this.CourseID = CourseID;
+        }
+        public void setCode(string SubjectCode)
+        {
+            string[] s = SubjectCode.Split(' ');
+            Subject = s[0];
+            Code = s[1];
+        }
+
+        public void setTitle(string Title)
+        {
+            this.Title = Title;
+        }
+
+        public void setLoc(string Location)
+        {
+            this.Location = Location;
+        }
+
+        public void setIns(string Instructor)
+        {
+            this.Instructor = Instructor;
+        }
+        public void setID(string CourseID)
+        {
+            this.CourseID = CourseID;
+        }
+        public string getSubjectCode()
+        {
+            return Subject + " " + Code;
+        }
+
+
+        public string getTitle()
+        {
+            return Title;
+        }
+
+        public string getLoc()
+        {
+            return Location;
+        }
+
+        public string getIn()
+        {
+            return Instructor;
+        }
+
+        public string getID()
+        {
+            return CourseID;
+        }
+
     }
     public class Instructor // Question 1.4
     {
