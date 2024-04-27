@@ -281,12 +281,19 @@ namespace ConsoleApp1
             return courseGroups;
         }
         // Question 2.2 Deliver the result set in the type IEnumerable<XElement>
+
         public static dynamic qCourseInstructorEnum(List<Instructor> instructorsList, Course[] coursesList)
         {
             Console.WriteLine("---- Q2.2 Deliver the result set in the type IEnumerable<XElement>");
-             
-             
-             
+
+            IEnumerable<XElement> resultXML =
+                from c in coursesList
+                where Int32.Parse(c.Code) >= 200 && Int32.Parse(c.Code) <= 299
+                join i in instructorsList on c.Instructor equals i.InstructorName
+                orderby c.Code ascending
+                select new XElement("Course", new XElement("Subject", c.Subject),
+                                              new XElement("CourseCode", c.getSubjectCode()),
+                                              new XElement("InstructorEmail", i.EmailAddress));
             return resultXML;
         }
     }
