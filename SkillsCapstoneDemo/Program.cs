@@ -220,20 +220,64 @@ namespace ConsoleApp1
 
             return query;
         }
+        //2.1a implementation
         public static dynamic qTitleInstructorInXml(Course[] coursesList)
         {
             Console.WriteLine("---- Q2.1a Retrieve CPI courses of number of 200 or higher");
-             
-             
-             
+            XElement courses = new XElement("Courses");
+
+            for (int i = 0; i < coursesList.Length; i++)
+            {
+                courses.Add(new XElement("Course", new XElement("Title", coursesList[i].Title),
+                                      new XElement("Instructor", coursesList[i].Instructor),
+                                      new XElement("Code", coursesList[i].Code)));
+            }
+
+            IEnumerable<XElement> cpiCourses =
+                from c in courses.Descendants("Course")
+                where (int)c.Element("Code") >= 200
+                orderby (string)c.Element("Instructor") ascending
+                select new XElement("Course", new XElement("Title", (string)c.Element("Title")),
+                                              new XElement("Instructor", (string)c.Element("Instructor")));
+
+
             return cpiCourses;
         }
+        //2.1b implementation
         public static dynamic qTitleCodeGroups(Course[] coursesList)
         {
             Console.WriteLine("---- Q2.1b Get courses in groups: subject 1st level key, code 2nd level key");
-             
-             
-             
+
+            XElement courseGroups = new XElement("Courses");
+            XElement subject;
+            XElement code;
+            XElement course;
+
+            //since we're using the same keys as 1.3 (subject and code) we can grab and use that method
+            var g = qGroups(coursesList);
+
+            foreach (var subGroup in g)
+            {
+                subject = new XElement("Subject", new XAttribute("Name", subGroup.Subject));
+                foreach (var codeGroup in subGroup.Groups)
+                {
+                    if (codeGroup.Courses.Count > 1)
+                    {
+                        code = new XElement("Code", new XAttribute("Number", codeGroup.Code));
+                        foreach (var c in codeGroup.Courses)
+                        {
+                            course = new XElement(("Course"), c.Title);
+                            code.Add(course);
+                        }
+                        subject.Add(code);
+                    }
+
+                }
+                courseGroups.Add(subject);
+            }
+
+
+
             return courseGroups;
         }
         // Question 2.2 Deliver the result set in the type IEnumerable<XElement>
